@@ -1,0 +1,8 @@
+{
+  "edgeworker-version": "1.0",
+  "group": "default",
+  "name": "EdgeAPIAuth",
+  "files": {
+    "main": "main.js"
+  }
+}

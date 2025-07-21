@@ -1,0 +1,13 @@
+provider "linode" {
+  token = var.linode_token
+}
+
+resource "linode_lke_cluster" "main" {
+  label       = "edge-api-cluster"
+  region      = "br-gru"
+  k8s_version = "1.28"
+  node_pools {
+    type  = "g6-standard-2"
+    count = 2
+  }
+}
