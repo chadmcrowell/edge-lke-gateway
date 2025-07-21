@@ -11,12 +11,6 @@ This project demonstrates how to use Akamai EdgeWorkers as an API gateway with t
 
 ## Implementation Guide
 
-Here's a step-by-step **Implementation Guide** for the `edge-lke-gateway` project. You can include this as `IMPLEMENTATION.md` in your repo or share it as onboarding docs.
-
----
-
-# 🚀 Implementation Guide: EdgeWorker + LKE Gateway
-
 This guide walks you through deploying an edge-validated API gateway using **Akamai EdgeWorkers** in front of a **Linode Kubernetes Engine (LKE)** backend API. Ideal for low-latency, low-cost API delivery across LATAM.
 
 ---
