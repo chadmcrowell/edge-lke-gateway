@@ -18,9 +18,8 @@ This is equivalent to an EdgeWorker modifying the request to inject metadata bef
 
 ## Structure
 
-- `edgeworker/`: EdgeWorker JavaScript and metadata
 - `terraform/`: Terraform code to provision LKE cluster
-- `kubernetes/`: Ingress resource to expose API
+- `kubernetes/`: Deployment, service, and envoy gateway with `HTTPRoute`
 
 
 ## Implementation Guide
