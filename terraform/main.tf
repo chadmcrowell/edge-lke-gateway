@@ -12,7 +12,7 @@ provider "linode" {
 }
 
 resource "linode_lke_cluster" "main" {
-  label       = "edge-api-cluster"
+  label       = "edge-cluster"
   region      = "br-gru"
   k8s_version = "1.33"
 
