@@ -21,3 +21,9 @@ resource "linode_lke_cluster" "main" {
     count = 2
   }
 }
+
+output "kubeconfig" {
+  description = "Decoded kubeconfig for kubectl"
+  value       = base64decode(linode_lke_cluster.main.kubeconfig)
+  sensitive   = true
+}

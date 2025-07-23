@@ -53,7 +53,10 @@ terraform apply
 3. Save the kubeconfig and test access:
 
 ```bash
-export KUBECONFIG=$(terraform output -raw kubeconfig)
+terraform output -raw kubeconfig > ~/.kube/latam-kubeconfig.yaml
+
+export KUBECONFIG=~/.kube/latam-kubeconfig.yaml
+
 kubectl get nodes
 ```
 
