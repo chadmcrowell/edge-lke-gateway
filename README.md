@@ -24,7 +24,7 @@ This is equivalent to an EdgeWorker modifying the request to inject metadata bef
 
 ## Implementation Guide
 
-This guide walks you through deploying an edge-validated API gateway using **Akamai EdgeWorkers** in front of a **Linode Kubernetes Engine (LKE)** backend API. Ideal for low-latency, low-cost API delivery across LATAM.
+This guide walks you through deploying an API gateway using **Envoy** in front of a **Linode Kubernetes Engine (LKE)** backend API. Ideal for low-latency, low-cost API delivery across LATAM.
 
 ---
 
