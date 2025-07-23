@@ -1,19 +1,35 @@
-# Edge-LKE Gateway
+# Edge LKE Gateway Demo
 
-This project demonstrates how to use Akamai EdgeWorkers as an API gateway with token authentication in front of a Linode Kubernetes Engine (LKE) backend.
+This project simulates Akamai EdgeWorker behavior using [Envoy Gateway](https://gateway.envoyproxy.io) on a Linode Kubernetes Engine (LKE) cluster. It demonstrates how to deploy a regional API backend with latency-aware routing and simulate "at-the-edge" behavior using the Gateway API and Envoy filters.
 
-This setup simulates EdgeWorker behavior by using Envoy Gateway + Gateway API filters to apply custom request logic at the gateway layer, just like EdgeWorkers apply logic at the Akamai edge.
 
-Your HTTPRoute includes this:
-```yaml
-filters:
-  - type: RequestHeaderModifier
-    requestHeaderModifier:
-      set:
-        - name: X-Envoy-Validated
-          value: "true"
+---
+
+## ✅ Overview
+
+- ✅ API backend served from LKE
+- ✅ Envoy Gateway installed via Helm with `LoadBalancer` service
+- ✅ Gateway API v1 resources (GatewayClass, Gateway, HTTPRoute)
+- ✅ Simulated "EdgeWorker" logic via request header injection
+- ✅ Real-world latency testing from LATAM regions
+
+---
+
+## 🌐 Architecture
+
 ```
-This is equivalent to an EdgeWorker modifying the request to inject metadata before sending it upstream.
+
++------------+     Akamai DNS / curlip.com probe     +-------------------+
+\|  curlip.com|  ───────────────────────────────────▶ |  Envoy Gateway LB |
+\| (LATAM PoPs)                                      |                   |
++------------+                                      |  LKE Cluster       |
+\|                   |
++------------+                                     +-------------------+
+\| API Client |──── Host: api.myapp.lat ─────▶     \[ edge-api Service ]
++------------+                                     \[  /api/healthz    ]
+└────────────────────
+
+```
 
 
 ## Structure
@@ -22,11 +38,10 @@ This is equivalent to an EdgeWorker modifying the request to inject metadata bef
 - `kubernetes/`: Deployment, service, and envoy gateway with `HTTPRoute`
 
 
-## Implementation Guide
+
+## 🚀 Deployment Steps
 
 This guide walks you through deploying an API gateway using **Envoy** in front of a **Linode Kubernetes Engine (LKE)** backend API. Ideal for low-latency, low-cost API delivery across LATAM.
-
----
 
 ### 📦 Prerequisites
 
@@ -71,7 +86,7 @@ kubectl get nodes
 
 ---
 
-### ⚙️ STEP 2: Deploy Envoy Gateway
+### ⚙️ STEP 2: Install Envoy Gateway with LoadBalancer
 
 ```bash
 # https://gateway.envoyproxy.io/latest/install/install-helm/
@@ -85,16 +100,29 @@ helm install eg oci://docker.io/envoyproxy/gateway-helm \
 > This will create a Service of type LoadBalancer, and Linode will automatically provision a NodeBalancer.
 
 
-### ⚙️ STEP 3: Deploy Your API Backend
+### ⚙️ STEP 3: Deploy Gateway API Resources
 
-1. Create a simple API (Node.js, Go, etc.) and expose it as a Kubernetes service.
+```bash
+kubectl apply -f ../kubernetes/envoy-gw-and-httproute.yaml
+```
+
+This includes:
+
+* `GatewayClass`
+* `Gateway` bound to `api.myapp.lat`
+* `HTTPRoute` with header filter simulating EdgeWorker logic
+
+
+### ⚙️ STEP 4: Deploy Your API Backend
+
+1. Create a simple API (Simpe Go App) and expose it as a Kubernetes service.
 
 2. Apply the sample manifests:
 
 ```bash
 kubectl apply -f ../kubernetes/deployment.yaml
 
-kubectl apply -f ../kubernetes/envoy-gw-and-httproute.yaml
+
 ```
 
 3. Verify public access:
@@ -107,14 +135,21 @@ curl -H "Host: api.myapp.lat" http://172.233.4.110/api/healthz
 
 ```
 
-### measure latency
+
+### STEP 5: LATAM Latency Testing
+
+1. Sample Output
 
 ```bash
-curl -w "\nConnect: %{time_connect}s\nTotal: %{time_total}s\n" \
-  -H "Host: api.myapp.lat" http://172.233.4.110/api/healthz
+$ curl -H "Host: api.myapp.lat" http://<EXTERNAL-IP>/api/healthz
+ok%
 
+$ curl -w "\nConnect: %{time_connect}s\nTotal: %{time_total}s\n" \
+  -H "Host: api.myapp.lat" http://<EXTERNAL-IP>/api/healthz
+ok
+Connect: 0.165102s
+Total: 0.557387s
 ```
-
 This is the actual response body from your backend service — your /api/healthz endpoint is working.
 
 ⏱ Connect: 0.165102s
@@ -126,6 +161,35 @@ Time taken to establish the TCP connection to 172.233.4.110:
 Time from start to finish of the HTTP request:
 - Includes TCP connection, sending the request, waiting for the response, and receiving it
 - Useful to spot backend slowness or excessive network latency
+
+
+2. To validate edge performance from Latin American regions, run the following:
+
+```bash
+bash test-latency-latam.sh
+```
+
+Probes run from:
+
+* 🇧🇷 São Paulo
+* 🇨🇱 Santiago
+* 🇲🇽 Mexico City
+* 🇨🇴 Bogotá
+* 🇵🇪 Lima
+* 🇺🇾 Montevideo
+
+The script uses [curlip.com](https://curlip.com) to simulate regional edge probing and returns:
+
+* `Connect Time`
+* `Time to First Byte (TTFB)`
+* `Total Response Time`
+
+
+---
+
+
+
+
 
 
 ---
