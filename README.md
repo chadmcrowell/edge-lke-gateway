@@ -43,18 +43,15 @@ This project simulates Akamai EdgeWorker behavior using [Envoy Gateway](https://
 
 This guide walks you through deploying an API gateway using **Envoy** in front of a **Linode Kubernetes Engine (LKE)** backend API. Ideal for low-latency, low-cost API delivery across LATAM.
 
-### 📦 Prerequisites
-
-#### 🔐 Accounts & Access
+### 📦 Requirements
 
 * [ ] Linode account with API token
+* Kubernetes 1.27+
+* Helm 3.11+
+* LKE or any Kubernetes cluster with public LoadBalancer support
+* `curl` and access to `curlip.com` for regional tests
 
-#### 💻 Tools Installed
 
-* `terraform`
-* `kubectl`
-* `docker` (if building backend images)
-* `helm`
 
 ---
 
@@ -185,34 +182,63 @@ The script uses [curlip.com](https://curlip.com) to simulate regional edge probi
 * `Total Response Time`
 
 
----
+3. Example output:
 
+```
+🌎 Testing from: Brazil_Sao_Paulo
 
+Connect: 0.677734s
+Total: 1.041497s
+---------------------------------------------
+🌎 Testing from: Chile_Santiago
 
+Connect: 0.167858s
+Total: 0.541343s
+---------------------------------------------
+🌎 Testing from: Colombia_Bogota
 
+Connect: 0.171347s
+Total: 0.532765s
+---------------------------------------------
+🌎 Testing from: Mexico_MexicoCity
 
+Connect: 0.167988s
+Total: 0.524381s
+---------------------------------------------
+🌎 Testing from: Argentina_BuenosAires
 
----
+Connect: 0.169061s
+Total: 0.518402s
+---------------------------------------------
+🌎 Testing from: USA_Dallas
 
-### 📈 Observability & Tuning
-
-* Enable **DataStream** in Akamai to stream logs
-* Add rate limiting using EdgeKV
-* Tune token cache TTL and validation method
-
----
-
-### 🧪 Test
-
-1. Make an API call with and without a valid `Authorization: Bearer ...` header:
-
-```bash
-curl -H "Authorization: Bearer fake" https://myapp.lat/api/ping
+Connect: 0.168390s
+Total: 0.518883s
+---------------------------------------------
 ```
 
-2. Check:
-   * 401s are blocked at edge
-   * Valid tokens forward to LKE backend
+We validated edge accessibility using `curlip.com` to simulate user traffic from key LATAM cities and compare it against a US baseline.
+
+| Location             | Connect Time | Total Time |
+|----------------------|--------------|------------|
+| 🇧🇷 São Paulo         | 0.68s        | 1.04s      |
+| 🇨🇱 Santiago          | 0.17s        | 0.54s      |
+| 🇨🇴 Bogotá            | 0.17s        | 0.53s      |
+| 🇲🇽 Mexico City       | 0.17s        | 0.52s      |
+| 🇦🇷 Buenos Aires      | 0.17s        | 0.52s      |
+| 🇺🇸 Dallas (Baseline) | 0.17s        | 0.52s      |
+
+> ✅ This confirms the Envoy Gateway deployed on LKE provides low-latency responses across LATAM.
+
+---
+
+## 📘 References
+
+* [Envoy Gateway Documentation](https://gateway.envoyproxy.io)
+* [Gateway API Spec](https://gateway-api.sigs.k8s.io/)
+* [curlip.com](https://curlip.com)
+
+
 
 ---
 
