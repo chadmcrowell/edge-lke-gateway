@@ -32,18 +32,14 @@ This guide walks you through deploying an API gateway using **Envoy** in front o
 
 #### 🔐 Accounts & Access
 
-* [ ] Akamai developer account (EdgeWorker access enabled)
 * [ ] Linode account with API token
-* [ ] Domain name (e.g. `myapp.lat`) with DNS control
-* [ ] Public SSL cert (Let’s Encrypt or Akamai cert manager)
 
 #### 💻 Tools Installed
 
 * `terraform`
 * `kubectl`
-* `akamai` CLI with `edgeworkers` and `property-manager` plugins
 * `docker` (if building backend images)
-* `helm` (optional)
+* `helm`
 
 ---
 
@@ -111,53 +107,26 @@ curl -H "Host: api.myapp.lat" http://172.233.4.110/api/healthz
 
 ```
 
----
-
-### 🌐 Step 4: Setup Akamai EdgeWorker
-
-1. Log in to Akamai CLI:
+### measure latency
 
 ```bash
-akamai configure
+curl -w "\nConnect: %{time_connect}s\nTotal: %{time_total}s\n" \
+  -H "Host: api.myapp.lat" http://172.233.4.110/api/healthz
 
-akamai install edgeworkers
 ```
 
-2. Package and upload EdgeWorker:
+This is the actual response body from your backend service — your /api/healthz endpoint is working.
 
-```bash
-cd ../edgeworker
-akamai edgeworkers pack
-akamai edgeworkers upload --bundle bundle.tgz --edgeworker-id YOUR_ID
-```
+⏱ Connect: 0.165102s
+Time taken to establish the TCP connection to 172.233.4.110:
+- Includes DNS resolution and the TCP handshake
+- Fast connection suggests the NodeBalancer is reachable and healthy
 
-3. Activate the EdgeWorker in your environment (staging or production):
+⏱ Total: 0.557387s
+Time from start to finish of the HTTP request:
+- Includes TCP connection, sending the request, waiting for the response, and receiving it
+- Useful to spot backend slowness or excessive network latency
 
-```bash
-akamai edgeworkers activate --network staging --edgeworker-id YOUR_ID
-```
-
----
-
-### 🌍 Step 4: Configure Akamai Property
-
-1. In **Property Manager**, create or update your property:
-   * Match rule: `/api/*`
-   * Add **EdgeWorker behavior** and attach your uploaded script
-   * Set **origin hostname**: `api.myapp.lat`
-
-2. Add `Authorization` and `x-forwarded-for` headers to origin request.
-
-3. Deploy the property to staging, then production.
-
----
-
-### 🔐 Step 5: Secure Traffic
-
-* Use HTTPS for origin and edge (Let's Encrypt or Akamai cert).
-* Optionally:
-  * Validate JWT signatures inside EdgeWorker
-  * Enforce IP geo-blocking using `request.userLocation`
 
 ---
 
