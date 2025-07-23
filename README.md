@@ -2,6 +2,20 @@
 
 This project demonstrates how to use Akamai EdgeWorkers as an API gateway with token authentication in front of a Linode Kubernetes Engine (LKE) backend.
 
+This setup simulates EdgeWorker behavior by using Envoy Gateway + Gateway API filters to apply custom request logic at the gateway layer, just like EdgeWorkers apply logic at the Akamai edge.
+
+Your HTTPRoute includes this:
+```yaml
+filters:
+  - type: RequestHeaderModifier
+    requestHeaderModifier:
+      set:
+        - name: X-Envoy-Validated
+          value: "true"
+```
+This is equivalent to an EdgeWorker modifying the request to inject metadata before sending it upstream.
+
+
 ## Structure
 
 - `edgeworker/`: EdgeWorker JavaScript and metadata
@@ -62,7 +76,21 @@ kubectl get nodes
 
 ---
 
-### ⚙️ Step 2: Deploy Your API Backend
+### ⚙️ STEP 2: Deploy Envoy Gateway
+
+```bash
+# https://gateway.envoyproxy.io/latest/install/install-helm/
+
+helm install eg oci://docker.io/envoyproxy/gateway-helm \
+  --version v0.0.0-latest \
+  -n envoy-gateway-system --create-namespace
+
+
+```
+> This will create a Service of type LoadBalancer, and Linode will automatically provision a NodeBalancer.
+
+
+### ⚙️ STEP 3: Deploy Your API Backend
 
 1. Create a simple API (Node.js, Go, etc.) and expose it as a Kubernetes service.
 
@@ -70,23 +98,30 @@ kubectl get nodes
 
 ```bash
 kubectl apply -f ../kubernetes/deployment.yaml
-kubectl apply -f ../kubernetes/ingress.yaml
+
+kubectl apply -f ../kubernetes/envoy-gw-and-httproute.yaml
 ```
 
 3. Verify public access:
 
 ```bash
-curl https://api.myapp.lat/api/healthz
+k -n envoy-gateway-system get svc
+
+curl -H "Host: api.myapp.lat" http://172.233.4.110/api/healthz 
+
+
 ```
 
 ---
 
-### 🌐 Step 3: Setup Akamai EdgeWorker
+### 🌐 Step 4: Setup Akamai EdgeWorker
 
 1. Log in to Akamai CLI:
 
 ```bash
 akamai configure
+
+akamai install edgeworkers
 ```
 
 2. Package and upload EdgeWorker:

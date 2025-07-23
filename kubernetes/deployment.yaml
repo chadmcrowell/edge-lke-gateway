@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edge-api
+  labels:
+    app: edge-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: edge-api
+  template:
+    metadata:
+      labels:
+        app: edge-api
+    spec:
+      containers:
+        - name: edge-api
+          image: kubeskills/api-example:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edge-api
+spec:
+  selector:
+    app: edge-api
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
