@@ -110,7 +110,7 @@ helm install eg oci://docker.io/envoyproxy/gateway-helm \
 ```bash
 kubectl apply -f ../kubernetes/envoy-gw-and-httproute.yaml
 
-> This will create a Service of type LoadBalancer, and Linode will automatically provision a NodeBalancer.```
+```
 
 This includes:
 
@@ -118,6 +118,8 @@ This includes:
 * `Gateway` bound to `api.myapp.lat`
 * `HTTPRoute` with header filter simulating EdgeWorker logic
 
+
+> This will create a Service of type LoadBalancer, and Linode will automatically provision a NodeBalancer.
 
 ### ⚙️ STEP 4: Deploy Your API Backend
 
