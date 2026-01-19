@@ -83,6 +83,8 @@ export KUBECONFIG=~/.kube/latam-kubeconfig.yaml
 kubectl get nodes
 ```
 
+![create-new-lke-cluster-with-terraform](screencasts/create-lke-cluster-via-terraform.gif)
+
 ---
 
 ### ⚙️ STEP 2: Install Envoy Gateway with LoadBalancer
