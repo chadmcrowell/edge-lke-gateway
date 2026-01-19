@@ -55,13 +55,17 @@ This guide walks you through deploying an API gateway using **Envoy** in front o
 
 ### 🛠️ Step 1: Provision LKE Cluster
 
-1. Set your Linode token as a variable:
+1. Create a Linode API token: Linode Console → Profile → API Tokens → Create a Personal Access Token with `Linodes` (read/write) and `Kubernetes` (read/write).
+
+![create-new-api-key](screencasts/linode-new-api-key.gif)
+
+2. Set your Linode token as a variable:
 
 ```bash
 export TF_VAR_linode_token=your-token-here
 ```
 
-2. Deploy the cluster:
+3. Deploy the cluster:
 
 ```bash
 cd terraform
@@ -69,7 +73,7 @@ terraform init
 terraform apply
 ```
 
-3. Save the kubeconfig and test access:
+4. Save the kubeconfig and test access:
 
 ```bash
 terraform output -raw kubeconfig > ~/.kube/latam-kubeconfig.yaml
