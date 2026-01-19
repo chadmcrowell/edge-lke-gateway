@@ -95,17 +95,22 @@ kubectl get nodes
 helm install eg oci://docker.io/envoyproxy/gateway-helm \
   --version v0.0.0-latest \
   -n envoy-gateway-system --create-namespace
-
-
 ```
-> This will create a Service of type LoadBalancer, and Linode will automatically provision a NodeBalancer.
+
+![install-envoy-gateway](screencasts/install-envoy-gateway.gif)
+
+> This command will create several resources in the `envoy-gateway-system` namespace, including the gateway API CRDs, the envoy gateway deployment that deploys the envoy proxy instance, and the ClusterIP service.
+
+
+
 
 
 ### ⚙️ STEP 3: Deploy Gateway API Resources
 
 ```bash
 kubectl apply -f ../kubernetes/envoy-gw-and-httproute.yaml
-```
+
+> This will create a Service of type LoadBalancer, and Linode will automatically provision a NodeBalancer.```
 
 This includes:
 
