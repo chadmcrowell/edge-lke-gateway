@@ -249,7 +249,9 @@ We validated edge accessibility using `curlip.com` to simulate user traffic from
 
 ## 🌎 Real-World Use Case: LATAM Checkout Acceleration
 
-An e-commerce platform serves customers across Latin America, but their primary APIs run in a US region. During peak traffic (sales events), users in Brazil, Chile, and Mexico experience slow checkout and payment timeouts. This Envoy Gateway setup fronts a regional LKE backend, routes traffic based on `Host`, and allows edge-style header injection (simulated EdgeWorker logic) to apply regional routing, feature flags, and A/B tests. The latency probes validate that the regional path reduces connect time and improves time-to-first-byte, directly reducing cart abandonment rates and payment failures.
+An e-commerce platform serves customers across Latin America, but their primary APIs run in a US region. During peak traffic (sales events), users in Brazil, Chile, and Mexico experience slow checkout and payment timeouts. 
+
+This Envoy Gateway setup fronts a regional LKE backend, routes traffic based on `Host`, and allows edge-style header injection (simulated EdgeWorker logic) to apply regional routing, feature flags, and A/B tests. The latency probes validate that the regional path reduces connect time and improves time-to-first-byte, directly reducing cart abandonment rates and payment failures.
 
 
 ---
