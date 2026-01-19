@@ -132,7 +132,6 @@ This includes:
 ```bash
 kubectl apply -f ../kubernetes/deployment.yaml
 
-
 ```
 
 3. Verify public access:
@@ -142,13 +141,9 @@ k -n envoy-gateway-system get svc
 
 curl -H "Host: api.myapp.lat" http://172.233.4.110/api/healthz 
 
-
 ```
 
-
-### STEP 5: LATAM Latency Testing
-
-1. Sample Output
+4. LATAM Latency Testing with `curl`
 
 ```bash
 $ curl -H "Host: api.myapp.lat" http://<EXTERNAL-IP>/api/healthz
@@ -160,7 +155,10 @@ ok
 Connect: 0.165102s
 Total: 0.557387s
 ```
-This is the actual response body from your backend service — your /api/healthz endpoint is working.
+
+> This is the actual response body from your backend service — your /api/healthz endpoint is working.
+
+![deploy-api-backend-and-test-with-curl](screencasts/deploy-api-backend-and-test-with-curl.gif)
 
 ⏱ Connect: 0.165102s
 Time taken to establish the TCP connection to 172.233.4.110:
