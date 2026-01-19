@@ -18,17 +18,15 @@ This project simulates Akamai EdgeWorker behavior using [Envoy Gateway](https://
 ## 🌐 Architecture
 
 ```
-
-+------------+     Akamai DNS / curlip.com probe     +-------------------+
-\|  curlip.com|  ───────────────────────────────────▶ |  Envoy Gateway LB |
-\| (LATAM PoPs)                                      |                   |
-+------------+                                      |  LKE Cluster       |
-\|                   |
-+------------+                                     +-------------------+
-\| API Client |──── Host: api.myapp.lat ─────▶     \[ edge-api Service ]
-+------------+                                     \[  /api/healthz    ]
-└────────────────────
-
+                           Akamai DNS / curlip.com probe
++--------------------+    Host: api.myapp.lat    +-----------------------+
+| curlip.com          | -----------------------> | Envoy Gateway LB       |
+| (LATAM PoPs)        |                          | (LKE Cluster)          |
++--------------------+                          |  +------------------+  |
+                                                |  | edge-api Service  |  |
++--------------------+    Host: api.myapp.lat   |  |  /api/healthz     |  |
+| API Client         | -----------------------> |  +------------------+  |
++--------------------+                          +-----------------------+
 ```
 
 
@@ -255,4 +253,3 @@ We validated edge accessibility using `curlip.com` to simulate user traffic from
 * Add API token revocation with EdgeKV
 * Add caching with `cacheKey` logic in EdgeWorker
 * Add OpenTelemetry in LKE backend for tracing
-
