@@ -171,11 +171,14 @@ Time from start to finish of the HTTP request:
 - Useful to spot backend slowness or excessive network latency
 
 
-2. To validate edge performance from Latin American regions, run the following:
+> To validate edge performance from Latin American regions, run the following:
 
 ```bash
-bash test-latency-latam.sh
+bash ../test-latency-latam.sh
 ```
+
+![probe-envoy-gateway-test-multiple-regions](screencasts/probe-envoy-gateway-test-from-different-regions.gif)
+
 
 Probes run from:
 
