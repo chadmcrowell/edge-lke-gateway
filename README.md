@@ -121,6 +121,8 @@ This includes:
 
 > This will create a Service of type LoadBalancer, and Linode will automatically provision a NodeBalancer.
 
+![create-gateway-api-resources](screencasts/create-gateway-api-resources.gif)
+
 ### ⚙️ STEP 4: Deploy Your API Backend
 
 1. Create a simple API (Simpe Go App) and expose it as a Kubernetes service.
