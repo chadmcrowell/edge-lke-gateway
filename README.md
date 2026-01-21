@@ -108,7 +108,7 @@ helm install eg oci://docker.io/envoyproxy/gateway-helm \
 ### ⚙️ STEP 3: Deploy Gateway API Resources
 
 ```bash
-kubectl apply -f ../kubernetes/envoy-gw-and-httproute.yaml
+kubectl apply -f ../kubernetes/gateway-api/
 
 ```
 
@@ -125,12 +125,12 @@ This includes:
 
 ### ⚙️ STEP 4: Deploy Your API Backend
 
-1. Create a simple API (Simpe Go App) and expose it as a Kubernetes service.
+1. Create a simple API (Simple Go app) and expose it as a Kubernetes service.
 
 2. Apply the sample manifests:
 
 ```bash
-kubectl apply -f ../kubernetes/deployment.yaml
+kubectl apply -f ../kubernetes/app/
 
 ```
 
