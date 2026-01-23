@@ -139,7 +139,7 @@ kubectl apply -f ../kubernetes/app/
 ```bash
 k -n envoy-gateway-system get svc
 
-curl -H "Host: api.myapp.lat" http://172.233.4.110/api/healthz 
+curl -H "Host: api.myapp.lat" http://<EXTERNAL-IP>/api/healthz 
 
 ```
 
